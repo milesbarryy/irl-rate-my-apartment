@@ -1,6 +1,6 @@
 # RateMyApartment Davis
 
-A RateMyProfessor-style site for Davis apartments, built on ASUCD Institutional Research Lab's
+A RateMyProfessor-style site for Davis apartments, built on ASUCD Innovation and Research Lab's
 annual housing survey (2024–2026). Students can filter and compare complexes, read the survey
 responses for each property, and see every reviewed property on a simple map of Davis.
 
