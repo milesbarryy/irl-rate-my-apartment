@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.DS_Store
+.venv/
+# Raw survey exports and OSM downloads stay out of this repo; see README.
+raw/

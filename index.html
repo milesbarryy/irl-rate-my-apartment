@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>RateMyApartment Davis</title>
+<meta name="description" content="Student ratings of Davis apartments from ASUCD IRL's annual housing survey.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <defs>
+    <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="2"/><path d="m20 20-3.5-3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/><rect x="3" y="14" width="18" height="6" rx="1.5" fill="none" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-map" viewBox="0 0 24 24"><path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2-6-2Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/><path d="M9 4v14M15 6v14" stroke="currentColor" stroke-width="2"/></symbol>
+    <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="2"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-close" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-filter" viewBox="0 0 24 24"><path d="M4 6h16M7 12h10M10 18h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></symbol>
+    <symbol id="i-star" viewBox="0 0 24 24"><path d="M12 2.8l2.8 5.9 6.4.8-4.7 4.4 1.2 6.4L12 17.2l-5.7 3.1 1.2-6.4-4.7-4.4 6.4-.8Z" fill="currentColor"/></symbol>
+  </defs>
+</svg>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#" aria-label="RateMyApartment Davis home">
+      <span class="brand-mark" aria-hidden="true">R</span>
+      <span class="brand-text"><strong>RateMyApartment</strong><span>Davis · by ASUCD IRL</span></span>
+    </a>
+
+    <div class="search" role="search">
+      <label for="search-input" class="sr-only">Search by apartment name, street address, or neighborhood</label>
+      <svg class="search-icon" aria-hidden="true"><use href="#i-search"/></svg>
+      <input id="search-input" type="search" autocomplete="off" spellcheck="false"
+             placeholder="Search apartments or addresses"
+             role="combobox" aria-expanded="false" aria-controls="search-list" aria-autocomplete="list">
+      <ul id="search-list" class="search-list" role="listbox" hidden></ul>
+    </div>
+
+    <div class="view-toggle" role="radiogroup" aria-label="Results view">
+      <button type="button" role="radio" aria-checked="true" data-view="grid" id="view-grid">
+        <svg aria-hidden="true"><use href="#i-grid"/></svg>Grid view
+      </button>
+      <button type="button" role="radio" aria-checked="false" data-view="map" id="view-map">
+        <svg aria-hidden="true"><use href="#i-map"/></svg>Map view
+      </button>
+    </div>
+
+    <button type="button" class="btn btn-ghost signin" id="signin-btn">
+      <svg aria-hidden="true"><use href="#i-user"/></svg><span id="signin-label">Sign in (SSO)</span>
+    </button>
+  </div>
+</header>
+
+<div class="layout">
+  <aside class="rail" aria-label="Filters and about">
+    <button type="button" class="btn btn-secondary filters-toggle" id="filters-toggle" aria-expanded="false" aria-controls="filters-panel">
+      <svg aria-hidden="true"><use href="#i-filter"/></svg>Filters<span class="filter-count" id="filter-count" hidden></span>
+    </button>
+
+    <section class="panel filters" id="filters-panel" aria-labelledby="filters-title">
+      <div class="panel-head">
+        <h2 id="filters-title">Filters</h2>
+        <button type="button" class="link-btn" id="clear-filters">Clear all</button>
+      </div>
+
+      <fieldset class="filter-group">
+        <legend>Distance to campus</legend>
+        <p class="hint">Straight-line miles to the Memorial Union</p>
+        <div class="check-grid" id="distance-filters"></div>
+      </fieldset>
+
+      <fieldset class="filter-group">
+        <legend>Minimum ratings</legend>
+        <p class="hint">Tap a star to set the lowest score you'll accept</p>
+        <div id="rating-filters" class="rating-filters"></div>
+      </fieldset>
+
+      <fieldset class="filter-group">
+        <legend>Rent per person</legend>
+        <p class="hint">Median monthly rent reported for each property</p>
+        <div class="rent-filter">
+          <svg id="rent-hist" class="rent-hist" role="img" aria-label="Histogram of monthly rent per person reported by survey respondents"></svg>
+          <div class="dual-range">
+            <input type="range" id="rent-min" aria-label="Minimum monthly rent">
+            <input type="range" id="rent-max" aria-label="Maximum monthly rent">
+          </div>
+          <div class="rent-inputs">
+            <label for="rent-min-num">From
+              <span class="money"><span aria-hidden="true">$</span><input type="number" id="rent-min-num" inputmode="numeric" step="50"></span>
+            </label>
+            <span class="dash" aria-hidden="true">–</span>
+            <label for="rent-max-num">To
+              <span class="money"><span aria-hidden="true">$</span><input type="number" id="rent-max-num" inputmode="numeric" step="50"></span>
+            </label>
+          </div>
+        </div>
+      </fieldset>
+    </section>
+
+    <section class="panel about" aria-labelledby="about-title">
+      <h2 id="about-title">About</h2>
+      <p>RateMyApartment is built and maintained by ASUCD’s Institutional Research Lab (IRL).</p>
+      <p>It started as a way for students to explore the results of our annual housing survey more intuitively.</p>
+      <p>As it grows, UC Davis students will be able to sign in and report their satisfaction with their rent, location, amenities, and communication with their landlord.</p>
+      <details class="rubric">
+        <summary>How ratings are calculated</summary>
+        <p>Every score is out of 5. Survey answers from “Very dissatisfied” (1) to “Very satisfied” (5) are grouped into four categories:</p>
+        <dl>
+          <dt>Maintenance</dt><dd>Satisfaction with maintenance and property management.</dd>
+          <dt>Location</dt><dd>Access to the nearest grocery store, bus stop, entertainment, and campus.</dd>
+          <dt>Livability</dt><dd>Quietness, safety, and space or privacy.</dd>
+          <dt>Value</dt><dd>“Was your housing worth the cost?” Yes counts as 5 and No as 1, so 3.0 means an even split.</dd>
+        </dl>
+        <p>The overall score is the average of the four. Properties with fewer than 5 responses are marked <em>limited data</em>.</p>
+      </details>
+      <p class="source" id="data-source"></p>
+    </section>
+  </aside>
+
+  <main class="results" id="main">
+    <div class="results-head">
+      <p class="results-count" id="results-count" aria-live="polite">Loading survey results…</p>
+      <div class="results-tools">
+        <div class="legend" aria-label="Overall score colors">
+          <span class="legend-label">Overall score</span>
+          <span class="legend-scale" id="score-legend"></span>
+        </div>
+        <label class="sort" for="sort-select">Sort
+          <select id="sort-select">
+            <option value="reviews">Most responses</option>
+            <option value="rating">Highest rated</option>
+            <option value="distance">Closest to campus</option>
+            <option value="rent">Lowest rent</option>
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <div id="grid-view" class="cards"></div>
+
+    <div id="map-view" class="map-wrap" hidden>
+      <div class="map" id="map" aria-label="Map of Davis showing reviewed apartments"></div>
+      <div class="map-controls" role="group" aria-label="Map zoom">
+        <button type="button" class="map-btn" id="zoom-in" aria-label="Zoom in">+</button>
+        <button type="button" class="map-btn" id="zoom-out" aria-label="Zoom out">−</button>
+        <button type="button" class="map-btn map-btn-text" id="zoom-reset">Reset</button>
+      </div>
+      <div class="map-legend">
+        <span><i class="dot"></i>Reviewed property</span>
+        <span><i class="campus-key"></i>UC Davis campus</span>
+      </div>
+      <p class="map-attrib">Map data © OpenStreetMap contributors</p>
+      <div class="map-popup" id="map-popup" hidden></div>
+      <div class="map-tip" id="map-tip" hidden></div>
+    </div>
+
+    <p class="empty" id="empty-state" hidden>No properties match these filters. <button type="button" class="link-btn" id="empty-clear">Clear all filters</button></p>
+  </main>
+</div>
+
+<dialog id="reviews-dialog" class="dialog dialog-wide" aria-labelledby="reviews-title">
+  <div class="dialog-head">
+    <div>
+      <h2 id="reviews-title"></h2>
+      <p class="dialog-sub" id="reviews-sub"></p>
+    </div>
+    <button type="button" class="icon-btn" data-close aria-label="Close"><svg><use href="#i-close"/></svg></button>
+  </div>
+  <div class="dialog-body" id="reviews-body"></div>
+</dialog>
+
+<dialog id="write-dialog" class="dialog" aria-labelledby="write-title">
+  <form id="write-form" novalidate>
+    <div class="dialog-head">
+      <div>
+        <h2 id="write-title">Write a review</h2>
+        <p class="dialog-sub" id="write-sub"></p>
+      </div>
+      <button type="button" class="icon-btn" data-close aria-label="Close"><svg><use href="#i-close"/></svg></button>
+    </div>
+    <div class="dialog-body" id="write-body"></div>
+    <div class="dialog-foot">
+      <p class="hint" id="write-note">Reviews are saved in this browser until UC Davis sign-in is connected.</p>
+      <div class="btn-row">
+        <button type="button" class="btn btn-secondary" data-close>Cancel</button>
+        <button type="submit" class="btn btn-primary">Save review</button>
+      </div>
+    </div>
+  </form>
+</dialog>
+
+<dialog id="signin-dialog" class="dialog dialog-narrow" aria-labelledby="signin-title">
+  <div class="dialog-head">
+    <h2 id="signin-title">Sign in with UC Davis</h2>
+    <button type="button" class="icon-btn" data-close aria-label="Close"><svg><use href="#i-close"/></svg></button>
+  </div>
+  <div class="dialog-body">
+    <p>Reviews will require a UC Davis Kerberos login (CAS single sign-on), so each student can review a property once.</p>
+    <p class="notice">SSO isn’t connected in this preview yet. You can continue in demo mode to try writing a review. Demo reviews are only saved in this browser.</p>
+  </div>
+  <div class="dialog-foot">
+    <div class="btn-row">
+      <button type="button" class="btn btn-secondary" data-close>Not now</button>
+      <button type="button" class="btn btn-primary" id="demo-signin">Continue in demo mode</button>
+    </div>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script src="js/map.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
